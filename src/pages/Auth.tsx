@@ -1,19 +1,30 @@
 import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import { useAuth } from '@vibecoding/shared';
 import { Zap, Mail, Lock, User, AtSign, Github, Globe, Eye, EyeOff } from 'lucide-react';
 import Button from '../components/ui/Button';
+import toast from 'react-hot-toast';
 
 type AuthMode = 'login' | 'register';
 type Role = 'client' | 'freelancer';
 
 export default function Auth() {
   const { t } = useTranslation();
+  const navigate = useNavigate();
+  const { user, signIn, signUp, signInWithGoogle } = useAuth();
   const [mode, setMode] = useState<AuthMode>('login');
   const [role, setRole] = useState<Role>('client');
   const [showPassword, setShowPassword] = useState(false);
   const [form, setForm] = useState({ name: '', username: '', email: '', password: '' });
   const [errors, setErrors] = useState<Record<string, string>>({});
+  const [loading, setLoading] = useState(false);
+
+  // Redirect if already logged in
+  if (user) {
+    navigate('/dashboard', { replace: true });
+    return null;
+  }
 
   const validate = () => {
     const e: Record<string, string> = {};
@@ -25,9 +36,37 @@ export default function Auth() {
     return Object.keys(e).length === 0;
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (validate()) { /* placeholder */ }
+    if (!validate()) return;
+    setLoading(true);
+
+    try {
+      if (mode === 'login') {
+        const { error } = await signIn(form.email, form.password);
+        if (error) {
+          toast.error(error.message || 'Ошибка входа');
+        } else {
+          toast.success('Вы вошли!');
+          navigate('/dashboard', { replace: true });
+        }
+      } else {
+        const { error } = await signUp(form.email, form.password, form.name);
+        if (error) {
+          toast.error(error.message || 'Ошибка регистрации');
+        } else {
+          toast.success('Проверьте email для подтверждения');
+        }
+      }
+    } catch (err: any) {
+      toast.error(err.message || 'Ошибка');
+    }
+    setLoading(false);
+  };
+
+  const handleGoogle = async () => {
+    const { error } = await signInWithGoogle();
+    if (error) toast.error(error.message);
   };
 
   const inputClass = (field: string) =>
@@ -122,8 +161,8 @@ export default function Auth() {
               </div>
             )}
 
-            <Button type="submit" variant="primary" size="lg" className="w-full">
-              {mode === 'login' ? t('auth.loginButton') : t('auth.registerButton')}
+            <Button type="submit" variant="primary" size="lg" className="w-full" disabled={loading}>
+              {loading ? '...' : mode === 'login' ? t('auth.loginButton') : t('auth.registerButton')}
             </Button>
           </form>
 
@@ -134,14 +173,12 @@ export default function Auth() {
             </div>
           </div>
 
-          <div className="grid grid-cols-3 gap-3">
-            {[{ icon: Globe, label: 'Google' }, { icon: Globe, label: 'VK' }, { icon: Github, label: 'GitHub' }].map((provider) => (
-              <button key={provider.label}
-                className="flex items-center justify-center gap-2 py-3 rounded-xl border border-gold/20 text-sm text-muted hover:text-gold hover:border-gold/25 transition-all cursor-pointer">
-                <provider.icon size={16} />
-                <span className="hidden sm:inline">{provider.label}</span>
-              </button>
-            ))}
+          <div className="grid grid-cols-1 gap-3">
+            <button onClick={handleGoogle}
+              className="flex items-center justify-center gap-2 py-3 rounded-xl border border-gold/20 text-sm text-muted hover:text-gold hover:border-gold/25 transition-all cursor-pointer">
+              <Globe size={16} />
+              <span>Google</span>
+            </button>
           </div>
         </div>
       </div>

@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { BrowserRouter, Routes, Route, useLocation, Navigate } from 'react-router-dom';
 import { Toaster } from 'react-hot-toast';
+import { AuthProvider, useAuth } from '@vibecoding/shared';
 import { Header } from '@vibecoding/shared';
 import '@vibecoding/shared/styles';
 import CategoriesBar from './components/CategoriesBar';
@@ -15,7 +16,6 @@ import Auth from './pages/Auth';
 import Dashboard from './pages/Dashboard';
 import FreelancerDashboard from './pages/FreelancerDashboard';
 import CreateGig from './pages/CreateGig';
-import { useAuthStore } from './stores/authStore';
 
 function ScrollToTop() {
   const { pathname } = useLocation();
@@ -24,22 +24,17 @@ function ScrollToTop() {
 }
 
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
-  const isAuthenticated = useAuthStore((s) => s.isAuthenticated);
-  if (!isAuthenticated) {
-    return <Navigate to="/auth" replace />;
-  }
+  const { user, loading } = useAuth();
+  if (loading) return null;
+  if (!user) return <Navigate to="/auth" replace />;
   return <>{children}</>;
 }
 
 function AppContent() {
   const [searchOpen, setSearchOpen] = useState(false);
-  const checkAuth = useAuthStore((s) => s.checkAuth);
-  const user = useAuthStore((s) => s.user);
 
   const openSearch = useCallback(() => setSearchOpen(true), []);
   const closeSearch = useCallback(() => setSearchOpen(false), []);
-
-  useEffect(() => { checkAuth(); }, [checkAuth]);
 
   useEffect(() => {
     const handler = () => setSearchOpen(true);
@@ -101,7 +96,9 @@ function AppContent() {
 export default function App() {
   return (
     <BrowserRouter>
-      <AppContent />
+      <AuthProvider>
+        <AppContent />
+      </AuthProvider>
     </BrowserRouter>
   );
 }
