@@ -11,13 +11,13 @@ interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
 
 const variantClasses: Record<ButtonVariant, string> = {
   primary:
-    'relative bg-gold/10 text-gold font-semibold border border-gold/50 hover:bg-gold/20 hover:shadow-glow-gold active:scale-[0.98] transition-all overflow-hidden',
+    'relative bg-transparent text-gold font-bold border-2 border-gold hover:bg-gold hover:text-void hover:shadow-[0_0_20px_var(--neon-cyan)] active:scale-[0.98] transition-all overflow-hidden font-display tracking-[2px] uppercase',
   secondary:
-    'border border-gold/20 text-heading bg-nebula-light hover:bg-nebula-lighter hover:border-gold/30 active:scale-[0.98] transition-all',
+    'border border-gold/40 text-heading bg-nebula-light hover:bg-nebula-lighter hover:border-gold/60 hover:shadow-[0_0_15px_rgba(0,255,249,0.2)] active:scale-[0.98] transition-all font-heading',
   destructive:
-    'bg-neon-rose/20 text-neon-rose font-semibold border border-neon-rose/30 hover:bg-neon-rose/30 active:scale-[0.98] transition-all',
+    'bg-neon-rose/20 text-neon-rose font-semibold border border-neon-rose/30 hover:bg-neon-rose/30 active:scale-[0.98] transition-all font-heading',
   ghost:
-    'text-muted hover:text-heading hover:bg-white/5 transition-colors',
+    'text-muted hover:text-heading hover:bg-gold/10 transition-colors font-heading',
 };
 
 const sizeClasses: Record<ButtonSize, string> = {

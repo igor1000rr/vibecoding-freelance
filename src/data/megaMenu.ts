@@ -1,4 +1,13 @@
-import type { MegaMenuCategory } from '@vibecoding/shared';
+export interface MegaMenuSection {
+  title: string;
+  items: { label: string; slug: string; isNew?: boolean; isHot?: boolean }[];
+}
+
+export interface MegaMenuCategory {
+  label: string;
+  slug: string;
+  sections: MegaMenuSection[];
+}
 
 export const megaMenuCategories: MegaMenuCategory[] = [
   {

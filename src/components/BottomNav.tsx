@@ -1,23 +1,25 @@
 import { Link, useLocation } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { Home, Search, ShoppingBag, MessageCircle, User } from 'lucide-react';
 
 interface BottomNavProps {
   onOpenSearch: () => void;
 }
 
-const navItems = [
-  { icon: Home, label: 'Главная', href: '/' },
-  { icon: Search, label: 'Поиск', href: '#search' },
-  { icon: ShoppingBag, label: 'Заказы', href: '/dashboard' },
-  { icon: MessageCircle, label: 'Чат', href: '/dashboard' },
-  { icon: User, label: 'Профиль', href: '/auth' },
-];
-
 export default function BottomNav({ onOpenSearch }: BottomNavProps) {
+  const { t } = useTranslation();
   const location = useLocation();
 
+  const navItems = [
+    { icon: Home, label: t('category.home'), href: '/' },
+    { icon: Search, label: t('common.search'), href: '#search' },
+    { icon: ShoppingBag, label: t('common.orders'), href: '/dashboard' },
+    { icon: MessageCircle, label: t('common.messages'), href: '/dashboard' },
+    { icon: User, label: t('common.profile'), href: '/auth' },
+  ];
+
   return (
-    <nav className="fixed bottom-0 left-0 right-0 z-50 md:hidden bg-void/95 backdrop-blur-xl border-t border-gold/10">
+    <nav className="fixed bottom-0 left-0 right-0 z-50 md:hidden bg-void/95 backdrop-blur-xl border-t border-gold/20">
       <div className="flex items-center justify-around h-16 px-2">
         {navItems.map((item) => {
           const isActive = item.href !== '#search' && location.pathname === item.href;

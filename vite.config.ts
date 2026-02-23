@@ -9,7 +9,7 @@ export default defineConfig({
       { find: '@vibecoding/shared/styles', replacement: resolve(__dirname, 'shared/src/styles/shared.css') },
       { find: '@vibecoding/shared', replacement: resolve(__dirname, 'shared/src') },
     ],
-    dedupe: ['react', 'react-dom', 'react-router-dom', '@supabase/supabase-js'],
+    dedupe: ['react', 'react-dom', 'react-router-dom'],
   },
   build: {
     outDir: 'dist',
@@ -17,13 +17,6 @@ export default defineConfig({
     minify: 'esbuild',
     cssMinify: true,
     target: 'es2020',
-    rollupOptions: {
-      output: {
-        chunkFileNames: 'assets/[name]-[hash].js',
-        entryFileNames: 'assets/[name]-[hash].js',
-        assetFileNames: 'assets/[name]-[hash].[ext]'
-      }
-    }
   },
   optimizeDeps: {
     include: ['react', 'react-dom', 'react-router-dom']

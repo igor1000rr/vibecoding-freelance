@@ -1,5 +1,6 @@
 import { useEffect, useState, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { Search, ArrowRight, X } from 'lucide-react';
 import { gigs, categories, popularSearches } from '../data/mock';
 
@@ -9,6 +10,7 @@ interface CommandPaletteProps {
 }
 
 export default function CommandPalette({ isOpen, onClose }: CommandPaletteProps) {
+  const { t } = useTranslation();
   const [query, setQuery] = useState('');
   const inputRef = useRef<HTMLInputElement>(null);
   const navigate = useNavigate();
@@ -38,7 +40,7 @@ export default function CommandPalette({ isOpen, onClose }: CommandPaletteProps)
   const filteredGigs = query
     ? gigs.filter((g) =>
         g.title.toLowerCase().includes(query.toLowerCase()) ||
-        g.tags.some((t) => t.toLowerCase().includes(query.toLowerCase()))
+        g.tags.some((tag) => tag.toLowerCase().includes(query.toLowerCase()))
       ).slice(0, 5)
     : [];
 
@@ -52,16 +54,16 @@ export default function CommandPalette({ isOpen, onClose }: CommandPaletteProps)
     <div className="fixed inset-0 z-[100] flex items-start justify-center pt-[15vh]" onClick={onClose}>
       <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" />
       <div
-        className="relative w-full max-w-2xl mx-4 bg-nebula-light border border-gold/15 rounded-2xl shadow-2xl overflow-hidden"
+        className="relative w-full max-w-2xl mx-4 bg-nebula-light border border-gold/30 rounded-2xl shadow-2xl overflow-hidden"
         onClick={(e) => e.stopPropagation()}
       >
-        <div className="flex items-center gap-3 px-5 py-4 border-b border-gold/10">
+        <div className="flex items-center gap-3 px-5 py-4 border-b border-gold/20">
           <Search size={20} className="text-gold/60 flex-shrink-0" />
           <input
             ref={inputRef}
             value={query}
             onChange={(e) => setQuery(e.target.value)}
-            placeholder="Поиск кворков, категорий, фрилансеров..."
+            placeholder={t('header.search_placeholder')}
             className="flex-1 bg-transparent text-heading placeholder:text-muted text-base outline-none"
           />
           <button onClick={onClose} className="text-muted hover:text-heading transition-colors cursor-pointer">
@@ -72,13 +74,13 @@ export default function CommandPalette({ isOpen, onClose }: CommandPaletteProps)
         <div className="max-h-[60vh] overflow-y-auto p-2">
           {!query && (
             <div className="px-3 py-2">
-              <p className="text-xs font-heading font-medium text-muted uppercase tracking-wider mb-2">Популярные запросы</p>
+              <p className="text-xs font-heading font-medium text-muted uppercase tracking-wider mb-2">{t('header.popular_searches')}</p>
               <div className="flex flex-wrap gap-2">
                 {popularSearches.map((s) => (
                   <button
                     key={s}
                     onClick={() => setQuery(s)}
-                    className="px-3 py-1.5 text-sm bg-white/5 text-body rounded-lg border border-gold/10 hover:border-gold/30 hover:text-gold transition-all cursor-pointer"
+                    className="px-3 py-1.5 text-sm bg-gold/10 text-body rounded-lg border border-gold/20 hover:border-gold/30 hover:text-gold transition-all cursor-pointer"
                   >
                     {s}
                   </button>
@@ -90,13 +92,13 @@ export default function CommandPalette({ isOpen, onClose }: CommandPaletteProps)
           {filteredCategories.length > 0 && (
             <div className="px-3 py-2">
               <p className="text-xs font-heading font-medium text-muted uppercase tracking-wider mb-2">
-                {query ? 'Категории' : 'Все категории'}
+                {query ? t('home.categories') : t('home.all_categories')}
               </p>
               {filteredCategories.map((cat) => (
                 <button
                   key={cat.slug}
                   onClick={() => { navigate(`/categories/${cat.slug}`); onClose(); }}
-                  className="flex items-center justify-between w-full px-3 py-2.5 rounded-xl text-sm text-body hover:bg-white/5 hover:text-gold transition-colors cursor-pointer"
+                  className="flex items-center justify-between w-full px-3 py-2.5 rounded-xl text-sm text-body hover:bg-gold/10 hover:text-gold transition-colors cursor-pointer"
                 >
                   <span>{cat.name}</span>
                   <span className="flex items-center gap-1 text-muted">
@@ -110,12 +112,12 @@ export default function CommandPalette({ isOpen, onClose }: CommandPaletteProps)
 
           {query && filteredGigs.length > 0 && (
             <div className="px-3 py-2">
-              <p className="text-xs font-heading font-medium text-muted uppercase tracking-wider mb-2">Кворки</p>
+              <p className="text-xs font-heading font-medium text-muted uppercase tracking-wider mb-2">{t('profile.gigs')}</p>
               {filteredGigs.map((gig) => (
                 <button
                   key={gig.id}
                   onClick={() => { navigate(`/gigs/${gig.id}`); onClose(); }}
-                  className="flex items-center gap-3 w-full px-3 py-2.5 rounded-xl text-left hover:bg-white/5 transition-colors cursor-pointer"
+                  className="flex items-center gap-3 w-full px-3 py-2.5 rounded-xl text-left hover:bg-gold/10 transition-colors cursor-pointer"
                 >
                   <img src={gig.image} alt="" className="w-10 h-10 rounded-lg object-cover flex-shrink-0" />
                   <div className="flex-1 min-w-0">
@@ -132,19 +134,17 @@ export default function CommandPalette({ isOpen, onClose }: CommandPaletteProps)
 
           {query && filteredGigs.length === 0 && filteredCategories.length === 0 && (
             <div className="px-3 py-8 text-center">
-              <p className="text-muted text-sm">Ничего не найдено по запросу &ldquo;{query}&rdquo;</p>
+              <p className="text-muted text-sm">{t('common.nothing_found')} &ldquo;{query}&rdquo;</p>
             </div>
           )}
         </div>
 
-        <div className="px-5 py-3 border-t border-gold/10 flex items-center gap-4 text-xs text-muted">
+        <div className="px-5 py-3 border-t border-gold/20 flex items-center gap-4 text-xs text-muted">
           <span className="flex items-center gap-1">
-            <kbd className="px-1.5 py-0.5 bg-white/5 rounded border border-gold/10 font-mono">Enter</kbd>
-            выбрать
+            <kbd className="px-1.5 py-0.5 bg-gold/10 rounded border border-gold/20 font-mono">Enter</kbd>
           </span>
           <span className="flex items-center gap-1">
-            <kbd className="px-1.5 py-0.5 bg-white/5 rounded border border-gold/10 font-mono">Esc</kbd>
-            закрыть
+            <kbd className="px-1.5 py-0.5 bg-gold/10 rounded border border-gold/20 font-mono">Esc</kbd>
           </span>
         </div>
       </div>

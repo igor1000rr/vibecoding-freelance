@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { Package } from 'lucide-react';
 import type { Gig } from '../types';
 import Avatar from './ui/Avatar';
@@ -10,10 +11,11 @@ interface GigCardProps {
 }
 
 export default function GigCard({ gig, index = 0 }: GigCardProps) {
+  const { t } = useTranslation();
   return (
     <Link
       to={`/gigs/${gig.id}`}
-      className="group block card overflow-hidden opacity-0 animate-fade-in"
+      className="group block card overflow-hidden opacity-0 animate-fade-in transition-all duration-300 hover:-translate-y-2 hover:shadow-[0_8px_30px_rgba(212,175,55,0.15)]"
       style={{ animationDelay: `${index * 100}ms` }}
     >
       <div className="aspect-video overflow-hidden relative">
@@ -48,17 +50,17 @@ export default function GigCard({ gig, index = 0 }: GigCardProps) {
           </span>
         </div>
 
-        <div className="border-t border-gold/10 pt-3">
+        <div className="border-t border-gold/30 pt-3">
           <div className="flex items-center justify-between">
             <div className="flex flex-wrap gap-1.5">
               {gig.tags.slice(0, 3).map((tag) => (
-                <span key={tag} className="px-2 py-0.5 text-xs bg-white/5 text-muted rounded-md border border-gold/5">
+                <span key={tag} className="px-2 py-0.5 text-xs bg-gold/10 text-body rounded-md border border-gold/30">
                   {tag}
                 </span>
               ))}
             </div>
             <span className="text-lg font-bold text-gold font-mono whitespace-nowrap ml-2">
-              от {gig.packages.economy.price.toLocaleString('ru-RU')} ₽
+              {t('common.from')} {gig.packages.economy.price.toLocaleString('ru-RU')} ₽
             </span>
           </div>
         </div>
