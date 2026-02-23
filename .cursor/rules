@@ -1,0 +1,15 @@
+# Freelance — freelance.vibecoding.by
+
+Фриланс-маркетплейс для вайб-кодеров (аналог Fiverr/Kwork).
+
+## Стек: React 18 + TypeScript + Vite + Tailwind CSS (киберпанк-тема)
+## Shared: Header и Auth из `@vibecoding/shared` (папка `shared/` — git submodule)
+## Footer: свой, в `src/components/Footer.tsx`
+
+## БД (Supabase: zxywgueplrosvdwgpmvb — общая с школой)
+Таблицы с префиксом `fl_`: fl_categories, fl_gigs, fl_gig_packages, fl_reviews, fl_orders, fl_conversations, fl_messages, fl_favorites
+Общая: profiles (поля is_freelancer, username, title, bio, skills, freelancer_level)
+
+## Работай ТОЛЬКО в этом репозитории. Если нужно менять Header или Auth — переходи в vibecoding-shared.
+## Стиль: фиолетовые/голубые неоновые акценты, тёмный фон, глоу-эффекты
+## Деплой: npm run build → dist/ → freelance.vibecoding.by
